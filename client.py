@@ -5,7 +5,7 @@ import time
 
 def main():
     start = time.time()
-    if len(sys.argv)<3:
+    if len(sys.argv) < 3:
         print("Missing arguments")
         return
     url_a = str(sys.argv[1])
@@ -15,7 +15,6 @@ def main():
     print(response_body)
     end = time.time()
     print(end-start)
-
 
 
 if __name__ == '__main__':
