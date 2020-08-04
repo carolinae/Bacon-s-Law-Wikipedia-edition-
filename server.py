@@ -72,9 +72,9 @@ class WikiWebCrawler:
         wiki = wiki1 + '|' + wiki2
         wiki_pat = re.compile(wiki)
 
-        str_links = self._links_finder.get_links_from_current_link(link)
-
         try:
+            str_links = self._links_finder.get_links_from_current_link(link)
+
             wiki_links = []
             for link in str_links:
                 if link.startswith("//"):  # missing scheme link
