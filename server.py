@@ -27,6 +27,7 @@ class WikiWebCrawler:
         self._bfs_queue = queue.Queue()
         self._visited_depth = {}
         self._links_finder = LinksFinder()
+        self._is_found = False
 
     def find_path(self):
         self._bfs_queue.put(self.start_url)
@@ -37,7 +38,6 @@ class WikiWebCrawler:
             while not self._bfs_queue.empty():
                 # early exit in case we found url_b
                 if self.target_url in self._visited_depth.keys():
-                    executer.shutdown(wait=False)
                     return True
                 current_link = self._bfs_queue.get()
 
@@ -60,11 +60,17 @@ class WikiWebCrawler:
             return False
 
     def find_links_and_add_to_visited(self, link):
+        if self._is_found:
+            return
         links = self.get_wiki_links(link)
+        depth = self._visited_depth[link] + 1
         for neighbour in links:
             if neighbour not in self._visited_depth.keys():
-                self._visited_depth[neighbour] = self._visited_depth[link] + 1
+                self._visited_depth[neighbour] = depth
                 self._bfs_queue.put(neighbour)
+            if neighbour == self.target_url:
+                self._is_found = True
+                break
 
     def get_wiki_links(self, link):
         wiki1 = 'http[s]?://([a-zA-Z.0-9]{,3}wikipedia.org/wiki/[/!@i^*$a-zA-Z0-9_-]*)(?:&quot)?'
