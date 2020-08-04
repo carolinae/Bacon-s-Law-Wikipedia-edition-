@@ -7,6 +7,7 @@ from urllib import request, error
 import queue
 from concurrent.futures import ThreadPoolExecutor
 
+
 class LinksFinder:
     def __init__(self):
         self._my_regex = '(?<=<a href=")[^"]*'
@@ -41,11 +42,11 @@ class WikiWebCrawler:
                 current_link = self._bfs_queue.get()
 
                 # project's requirements
-                if self._visited_depth[current_link] < 2:
+                if self._visited_depth[current_link] < 6:
                     links.append(current_link)
 
                 # we want to wait before continue in case of:
-                # the bfs queue is empty - since the running the threads might push new links to the queue
+                #   the bfs queue is empty - since the running the threads might push new links to the queue
                 if self._bfs_queue.empty():
                     results = executer.map(self.find_links_and_add_to_visited, links)
                     for _ in results:
@@ -82,6 +83,7 @@ class WikiWebCrawler:
                     link = 'https://en.wikipedia.org' + link
                 if wiki_pat.match(link):
                     result = link.index('/wiki/')
+                    # we ignore 'category' links
                     if ":" in link[result + 6:]:
                         continue
                     else:
